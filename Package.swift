@@ -245,7 +245,7 @@ let package = Package(
         // mlx-swift-examples. Pins mlx-swift .upToNextMinor(0.31.4), compatible with ours.
         // Pin the stable release matched to MLX Swift 0.31.4. Tracking the upstream
         // main branch made clean release and Homebrew builds non-reproducible.
-        .package(url: "https://github.com/ml-explore/mlx-swift-lm", exact: "3.31.4"),
+        .package(url: "https://github.com/ml-explore/mlx-swift-lm", "3.31.4"..<"4.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
         .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", exact: "0.12.1"),
         .package(url: "https://github.com/apple/swift-system.git", from: "1.8.0"),
