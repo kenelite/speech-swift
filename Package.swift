@@ -256,8 +256,6 @@ let package = Package(
         // without declaring swift-nio-ssl as a target dependency, so the module is unresolvable
         // on a clean checkout. https://github.com/hummingbird-project/swift-websocket
         .package(url: "https://github.com/hummingbird-project/swift-websocket.git", "1.5.0"..<"1.6.0"),
-        // WhisperKit (Argmax) — retained for benchmark comparison against the native WhisperASR runtime.
-        .package(url: "https://github.com/argmaxinc/WhisperKit", from: "1.0.0"),
         // Grammar-constrained decoding for chat response formats. The same engine and release
         // Ollama's MLX runner applies to structured outputs; exact so a grammar change is a
         // deliberate bump.
@@ -913,7 +911,6 @@ let package = Package(
                 "VoxtralASR",
                 "MossTranscribe",
                 .product(name: "MLX", package: "mlx-swift"),
-                .product(name: "WhisperKit", package: "WhisperKit"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),

@@ -14,7 +14,7 @@ struct AsrBench: AsyncParsableCommand {
 
     @Option(name: .shortAndLong, parsing: .upToNextOption,
             help: "Engines to run. Valid: \(EngineID.allCases.map { $0.rawValue }.joined(separator: ", ")).")
-    var engines: [String] = ["qwen3-coreml", "parakeet", "whisperkit-large-v3-turbo"]
+    var engines: [String] = ["qwen3-coreml", "parakeet", "whisper-asr-turbo"]
 
     @Option(name: .shortAndLong, help: "Max utterances per engine (omit = full set).")
     var limit: Int?
