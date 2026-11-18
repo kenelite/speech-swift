@@ -53,10 +53,12 @@ if [[ ! -d "$KERNELS_DIR" ]]; then
   exit 1
 fi
 
+# NAX kernels need Metal 4 and a macOS 26.2 deployment target (see MLX's kernels/CMakeLists.txt).
+# Match every NAX file name, including suffixed ones such as gated_delta_update_nax_vjp.metal (MLX 0.33).
 METAL_SRCS=()
 while IFS= read -r line; do
   METAL_SRCS+=("$line")
-done < <(find "$KERNELS_DIR" -type f -name '*.metal' ! -name '*_nax.metal' | LC_ALL=C sort)
+done < <(find "$KERNELS_DIR" -type f -name '*.metal' ! -name '*_nax*.metal' | LC_ALL=C sort)
 if [[ "${#METAL_SRCS[@]}" -eq 0 ]]; then
   echo "error: no .metal sources found under $KERNELS_DIR" >&2
   exit 1
@@ -89,7 +91,7 @@ CURRENT_HASH="$(
     while IFS= read -r file; do
       printf '%s\n' "${file#"$KERNELS_DIR/"}"
       cat "$file"
-    done < <(find "$KERNELS_DIR" -type f \( -name '*.metal' -o -name '*.h' \) ! -name '*_nax.metal' | LC_ALL=C sort)
+    done < <(find "$KERNELS_DIR" -type f \( -name '*.metal' -o -name '*.h' \) ! -name '*_nax*.metal' | LC_ALL=C sort)
   } | shasum -a 256 | awk '{print $1}'
 )"
 
