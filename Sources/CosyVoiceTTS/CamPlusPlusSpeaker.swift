@@ -120,7 +120,13 @@ public final class CamPlusPlusSpeaker {
             shape: [1, targetFrames as NSNumber, 80],
             dataType: .float16
         )
+        // Float16 is unavailable on x86_64 macOS; Intel builds go through NSNumber.
+        #if arch(x86_64)
+        func storeMel(_ i: Int, _ v: Float) { melArray[i] = NSNumber(value: v) }
+        #else
         let melPtr = melArray.dataPointer.assumingMemoryBound(to: Float16.self)
+        func storeMel(_ i: Int, _ v: Float) { melPtr[i] = Float16(v) }
+        #endif
 
         if nFrames >= targetFrames {
             // Center-crop: take the middle 500 frames
@@ -128,14 +134,14 @@ public final class CamPlusPlusSpeaker {
             for i in 0..<(targetFrames * 80) {
                 let frame = i / 80
                 let bin = i % 80
-                melPtr[i] = Float16(melSpec[(offset + frame) * 80 + bin])
+                storeMel(i, melSpec[(offset + frame) * 80 + bin])
             }
         } else {
             // Tile: repeat mel frames to fill targetFrames
             for i in 0..<(targetFrames * 80) {
                 let frame = (i / 80) % nFrames
                 let bin = i % 80
-                melPtr[i] = Float16(melSpec[frame * 80 + bin])
+                storeMel(i, melSpec[frame * 80 + bin])
             }
         }
 
@@ -151,10 +157,16 @@ public final class CamPlusPlusSpeaker {
         }
 
         var embedding = [Float](repeating: 0, count: Self.embeddingDim)
+        #if arch(x86_64)
+        for i in 0..<Self.embeddingDim {
+            embedding[i] = embArray[i].floatValue
+        }
+        #else
         let embPtr = embArray.dataPointer.assumingMemoryBound(to: Float16.self)
         for i in 0..<Self.embeddingDim {
             embedding[i] = Float(embPtr[i])
         }
+        #endif
 
         return embedding
     }
